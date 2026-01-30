@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Professional Card Design</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+    body{background:#eef1f5;color:#1f2937;padding:60px 20px}
+    h1{font-size:32px;text-align:center;margin-bottom:50px;font-weight:700}
+
+    .cards{
+      max-width:1200px;
+      margin:auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:#ffffff;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 15px 35px rgba(0,0,0,.08);
+      transition:.35s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-12px) scale(1.02);
+      box-shadow:0 30px 60px rgba(0,0,0,.15);
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,rgba(79,70,229,.08),rgba(99,102,241,.05));
+      opacity:0;
+      transition:.4s;
+    }
+
+    .card:hover::before{opacity:1}
+
+    .card{position:relative}
+
+    .card img{transition:.4s}
+    .card:hover img{transform:scale(1.08)}
+
+    .btn{transition:.3s}
+    .card:hover .btn{
+      background:#3730a3;
+      transform:translateX(5px);
+    }
+
+    .card img{
+      width:100%;
+      height:190px;
+      object-fit:cover;
+    }
+
+    .content{padding:25px}
+
+    .tag{
+      display:inline-block;
+      background:#e0e7ff;
+      color:#3730a3;
+      font-size:12px;
+      padding:6px 12px;
+      border-radius:20px;
+      margin-bottom:12px;
+      font-weight:600;
+    }
+
+    .content h3{
+      font-size:20px;
+      margin-bottom:10px;
+      font-weight:600;
+    }
+
+    .content p{
+      font-size:14px;
+      color:#4b5563;
+      line-height:1.6;
+      margin-bottom:20px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 20px;
+      background:#4f46e5;
+      color:#fff;
+      text-decoration:none;
+      border-radius:10px;
+      font-size:14px;
+      font-weight:500;
+      transition:.3s;
+    }
+
+    .btn:hover{background:#4338ca}
+
+    footer{
+      text-align:center;
+      margin-top:60px;
+      font-size:13px;
+      color:#6b7280;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Our Professional Services</h1>
+
+<div class="cards">
+  <div class="card">
+    <img src="https://picsum.photos/500/350?1" alt="Web Design">
+    <div class="content">
+      <span class="tag">Design</span>
+      <h3>Web Design</h3>
+      <p>Crafting modern, clean and responsive designs that reflect your brand professionally.</p>
+      <a href="#" class="btn">Learn More →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="https://picsum.photos/500/350?2" alt="Development">
+    <div class="content">
+      <span class="tag">Development</span>
+      <h3>Frontend Development</h3>
+      <p>High-quality, performance-focused development using modern web standards.</p>
+      <a href="#" class="btn">Learn More →</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="https://picsum.photos/500/350?3" alt="UI UX">
+    <div class="content">
+      <span class="tag">UX</span>
+      <h3>UI / UX Strategy</h3>
+      <p>User-centered experiences designed to increase engagement and conversions.</p>
+      <a href="#" class="btn">Learn More →</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026  BY MIDHUN KB AND  MANUKRISHNA MK . All rights reserved.</footer>
+
+</body>
+</html>
+<a href="portfolio.html" class="btn" style="margin:30px auto;display:inline-block">
+  ← Back to Portfolio
+</a>

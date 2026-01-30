@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clock + Countdown + Alarm</title>
+
+<!-- Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",Arial,sans-serif}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  transition:.4s;
+}
+body.light{background:linear-gradient(135deg,#ece9f7,#e4e8ff,#dee7ff)}
+
+.wrapper{position:relative}
+
+.square,.circle{
+  position:absolute;
+  filter:blur(.5px);
+  animation:float 6s ease-in-out infinite;
+}
+.square{
+  width:120px;height:120px;
+  background:linear-gradient(135deg,#ff416c,#ff4b2b);
+  border-radius:18px;
+  top:50%;left:-70px;transform:translateY(-50%);
+}
+.circle{
+  width:140px;height:140px;
+  background:linear-gradient(135deg,#3a7bd5,#00d2ff);
+  border-radius:50%;
+  right:-80px;top:50%;transform:translateY(-50%);
+  animation-delay:1.2s;
+}
+@keyframes float{
+  0%,100%{transform:translateY(-50%) translateX(0)}
+  50%{transform:translateY(-55%) translateX(6px)}
+}
+
+/* TAB BAR */
+.tabs{
+  position:absolute;
+  top:-75px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:35px;
+  align-items:center;
+}
+.tab{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:11px;
+  color:#cfcfcf;
+  cursor:pointer;
+  user-select:none;
+}
+.tab span.icon{
+  font-size:22px;
+  margin-bottom:4px;
+}
+.tab.active{
+  color:#1e6cff;
+  font-weight:600;
+}
+
+/* CLOCK CARD */
+.clock{
+  width:420px;
+  padding:25px 35px;
+  border-radius:20px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  backdrop-filter:blur(14px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  animation:glow 4.5s ease-in-out infinite;
+  box-shadow:0 0 25px rgba(0,160,255,.35),0 0 70px rgba(0,200,255,.25);
+}
+body.light .clock{
+  color:#222;background:rgba(255,255,255,.55);
+}
+@keyframes glow{
+  0%,100%{box-shadow:0 0 25px rgba(0,180,255,.35),0 0 70px rgba(0,220,255,.2)}
+  50%{box-shadow:0 0 45px rgba(0,240,255,.6),0 0 110px rgba(0,255,255,.35)}
+}
+
+.time-box{text-align:center;min-width:85px}
+.num{font-size:34px;font-weight:600}
+.label{font-size:10px;opacity:.8;margin-top:4px;letter-spacing:2px}
+.colon{font-size:28px;font-weight:600;opacity:.8}
+
+/* BOTTOM PANEL */
+.bottom-panel{
+  margin-top:70px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+}
+
+.row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.row input,.row button{padding:7px 10px;border-radius:10px;border:none}
+
+.note{color:#fff;font-size:11px;opacity:.75}
+body.light .note{color:#333}
+
+.screen{display:none}
+.screen.active{display:block}
+
+body.mobile .clock{width:280px;padding:18px 20px}
+body.mobile .num{font-size:26px}
+body.mobile .colon{font-size:22px}
+
+body.desktop .clock{width:520px;padding:30px 45px}
+body.desktop .num{font-size:42px}
+body.desktop .colon{font-size:34px}
+
+/* FOOTER */
+footer{
+  position:fixed;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  font-size:13px;
+  color:#aaa;
+  z-index:1000;
+}
+footer a{
+  color:#1e6cff;
+  text-decoration:none;
+  font-weight:500;
+}
+footer a:hover{text-decoration:underline}
+</style>
+</head>
+
+<body class="desktop">
+
+<div class="wrapper">
+
+  <div class="tabs">
+    <div class="tab active" data-screen="alarmScreen">
+      <span class="icon"><i class="fa-solid fa-bell"></i></span>
+      Alarm
+    </div>
+    <div class="tab" data-screen="clockScreen">
+      <span class="icon"><i class="fa-regular fa-clock"></i></span>
+      Clock
+    </div>
+    <div class="tab" data-screen="timerScreen">
+      <span class="icon"><i class="fa-solid fa-hourglass-half"></i></span>
+      Timer
+    </div>
+    <div class="tab" data-screen="stopwatchScreen">
+      <span class="icon"><i class="fa-solid fa-stopwatch"></i></span>
+      Stopwatch
+    </div>
+  </div>
+
+  <div class="square"></div>
+  <div class="circle"></div>
+
+  <div class="clock">
+    <div class="time-box"><div class="num" id="hours">00</div><div class="label">HOURS</div></div>
+    <div class="colon">:</div>
+    <div class="time-box"><div class="num" id="minutes">00</div><div class="label">MINS</div></div>
+    <div class="colon">:</div>
+    <div class="time-box"><div class="num" id="seconds">00</div><div class="label">SEC</div></div>
+  </div>
+
+  <div class="bottom-panel">
+
+    <div class="screen active" id="alarmScreen">
+      <div class="row">
+        <input type="time" id="alarmTime">
+        <button id="setAlarm">Set</button>
+        <button id="clearAlarm">Clear</button>
+      </div>
+      <div class="row">
+        <input type="file" id="ringPicker" accept="audio/*">
+      </div>
+      <div class="note">Alarm -- choose your own ringtone</div>
+    </div>
+
+    <div class="screen" id="clockScreen">
+      <div class="note">This shows the current time</div>
+    </div>
+
+    <div class="screen" id="timerScreen">
+      <div class="row">
+        <input type="number" id="hIn" placeholder="Hours" min="0">
+        <input type="number" id="mIn" placeholder="Mins" min="0" max="59">
+        <input type="number" id="sIn" placeholder="Sec" min="0" max="59">
+        <button id="startCd">Start</button>
+      </div>
+      <div class="note">Timer -- counts down and rings</div>
+    </div>
+
+    <div class="screen" id="stopwatchScreen">
+      <div class="row">
+        <button id="swStart">Start</button>
+        <button id="swStop">Stop</button>
+        <button id="swReset">Reset</button>
+      </div>
+      <div class="note" id="swTime">00:00:00</div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <a href="portfolio.html">← Back to Portfolio</a>
+</footer>
+
+<script>
+const hoursEl=document.getElementById("hours");
+const minutesEl=document.getElementById("minutes");
+const secondsEl=document.getElementById("seconds");
+
+let countdownInterval=null, remaining=0;
+let alarmTime=null, alarmInterval=null;
+let swInterval=null, swSeconds=0;
+
+let audio=new Audio(); audio.loop=true;
+function pad(n){return n<10?"0"+n:n}
+
+function runClock(){
+  const n=new Date();
+  hoursEl.textContent=pad(n.getHours());
+  minutesEl.textContent=pad(n.getMinutes());
+  secondsEl.textContent=pad(n.getSeconds());
+}
+runClock();
+setInterval(runClock,1000);
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(tab.dataset.screen).classList.add("active");
+  };
+});
+
+document.getElementById("startCd").onclick=()=>{
+  clearInterval(countdownInterval);
+  const h=+hIn.value||0, m=+mIn.value||0, s=+sIn.value||0;
+  remaining=h*3600+m*60+s;
+  countdownInterval=setInterval(()=>{
+    if(remaining<=0){clearInterval(countdownInterval);playSound();return;}
+    remaining--;
+    hoursEl.textContent=pad(Math.floor(remaining/3600));
+    minutesEl.textContent=pad(Math.floor((remaining%3600)/60));
+    secondsEl.textContent=pad(remaining%60);
+  },1000);
+};
+
+ringPicker.onchange=e=>{
+  if(e.target.files[0]) audio.src=URL.createObjectURL(e.target.files[0]);
+};
+function playSound(){audio.currentTime=0;audio.play();}
+
+setAlarm.onclick=()=>{
+  if(!alarmTime.value) return;
+  clearInterval(alarmInterval);
+  alarmInterval=setInterval(()=>{
+    const n=new Date();
+    if(`${pad(n.getHours())}:${pad(n.getMinutes())}`===alarmTime.value){
+      playSound(); clearInterval(alarmInterval);
+    }
+  },1000);
+};
+clearAlarm.onclick=()=>{clearInterval(alarmInterval);audio.pause();};
+
+swStart.onclick=()=>{
+  clearInterval(swInterval);
+  swInterval=setInterval(()=>{
+    swSeconds++;
+    swTime.textContent=`${pad(swSeconds/3600|0)}:${pad(swSeconds%3600/60|0)}:${pad(swSeconds%60)}`;
+  },1000);
+};
+swStop.onclick=()=>clearInterval(swInterval);
+swReset.onclick=()=>{clearInterval(swInterval);swSeconds=0;swTime.textContent="00:00:00";};
+</script>
+
+</body>
+</html>
